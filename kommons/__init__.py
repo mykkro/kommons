@@ -24,7 +24,12 @@ def pick_n(list, n):
 
 def get_file_mod_datetime(file):
     return datetime.datetime.fromtimestamp(os.path.getmtime(file))
-    
+
+
+def get_immediate_subdirectories(a_dir):
+    return [name for name in os.listdir(a_dir)
+        if os.path.isdir(os.path.join(a_dir, name))]
+
 
 def ensure_dir(d):
     if not os.path.exists(d):
