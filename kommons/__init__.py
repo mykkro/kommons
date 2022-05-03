@@ -13,6 +13,11 @@ def flatten(lines):
     return [item for sublist in lines for item in sublist]
 
 
+def split_list_to_sublists(lst, subsize):
+    n = int(len(lst) / subsize)
+    return [lst[x*subsize:(x+1)*subsize] for x in range(0,n)]
+
+
 def pick_n(list, n):
     return [random.choice(list) for i in range(n)]
 
