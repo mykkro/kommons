@@ -1,8 +1,50 @@
 import os, json, itertools, argparse, yaml, sys
-import distutils.util
+import unicodedata
 import datetime
 import random 
 import shutil
+
+
+
+# a pure python shingling function that will be used in comparing
+# LSH to true Jaccard similarities
+def get_shingles(text, char_ngram=5):
+    """Create a set of overlapping character n-grams.
+    
+    Only full length character n-grams are created, that is the first character
+    n-gram is the first `char_ngram` characters from text, no padding is applied.
+
+    Each n-gram is spaced exactly one character apart.
+
+    Parameters
+    ----------
+
+    text: str
+        The string from which the character n-grams are created.
+
+    char_ngram: int (default 5)
+        Length of each character n-gram.
+    """
+    return set(text[head:head + char_ngram] for head in range(0, len(text) - char_ngram))
+
+
+def jaccard(set_a, set_b):
+    """Jaccard similarity of two sets.
+    
+    The Jaccard similarity is defined as the size of the intersection divided by
+    the size of the union of the two sets.
+
+    Parameters
+    ---------
+    set_a: set
+        Set of arbitrary objects.
+
+    set_b: set
+        Set of arbitrary objects.
+    """
+    intersection = set_a & set_b
+    union = set_a | set_b
+    return len(intersection) / len(union)
 
 
 def flatten(lines):
@@ -13,23 +55,13 @@ def flatten(lines):
     return [item for sublist in lines for item in sublist]
 
 
-def split_list_to_sublists(lst, subsize):
-    n = int(len(lst) / subsize)
-    return [lst[x*subsize:(x+1)*subsize] for x in range(0,n)]
-
-
 def pick_n(list, n):
     return [random.choice(list) for i in range(n)]
 
 
 def get_file_mod_datetime(file):
     return datetime.datetime.fromtimestamp(os.path.getmtime(file))
-
-
-def get_immediate_subdirectories(a_dir):
-    return [name for name in os.listdir(a_dir)
-        if os.path.isdir(os.path.join(a_dir, name))]
-
+    
 
 def ensure_dir(d):
     if not os.path.exists(d):
@@ -70,9 +102,9 @@ def load_json(path):
     return data
 
 
-def save_json(path, data, ensure_ascii=False):
+def save_json(path, data, ensure_ascii=False, cls=None):
     with open(path, "w", encoding="utf-8") as outfile:
-        json.dump(data, outfile, indent=4, ensure_ascii=ensure_ascii)
+        json.dump(data, outfile, indent=4, ensure_ascii=ensure_ascii, cls=None)
 
 
 def save_yaml(path, data):
@@ -104,4 +136,8 @@ def environ_or_required(key):
         else {'required': True}
     )
 
+
+def remove_accents(input_str):
+    nkfd_form = unicodedata.normalize('NFKD', str(input_str))
+    return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
 
