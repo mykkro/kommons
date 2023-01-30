@@ -9,7 +9,8 @@ import shutil
 # a pure python shingling function that will be used in comparing
 # LSH to true Jaccard similarities
 def get_shingles(text, char_ngram=5):
-    """Create a set of overlapping character n-grams.
+    """
+    Create a set of overlapping character n-grams.
     
     Only full length character n-grams are created, that is the first character
     n-gram is the first `char_ngram` characters from text, no padding is applied.
@@ -29,7 +30,8 @@ def get_shingles(text, char_ngram=5):
 
 
 def jaccard(set_a, set_b):
-    """Jaccard similarity of two sets.
+    """
+    Jaccard similarity of two sets.
     
     The Jaccard similarity is defined as the size of the intersection divided by
     the size of the union of the two sets.
@@ -49,7 +51,7 @@ def jaccard(set_a, set_b):
 
 def flatten(lines):
     """
-    Tages a list of lists as input. 
+    Takes a list of lists as input. 
     Returns a flattened list.
     """
     return [item for sublist in lines for item in sublist]
