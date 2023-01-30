@@ -56,19 +56,31 @@ def flatten(lines):
 
 
 def pick_n(list, n):
+    """
+    Returns a list of n random items from the input list.
+    """
     return [random.choice(list) for i in range(n)]
 
 
 def get_file_mod_datetime(file):
+    """
+    Returns the last modification datetime of the file.
+    """
     return datetime.datetime.fromtimestamp(os.path.getmtime(file))
     
 
 def ensure_dir(d):
+    """
+    Creates the directory if it doesn't exist.
+    """
     if not os.path.exists(d):
         os.makedirs(d)
 
 
 def empty_dir(folder):
+    """
+    Deletes all files and folders in the given folder.
+    """
     for filename in os.listdir(folder):
         file_path = os.path.join(folder, filename)
         try:
@@ -81,38 +93,59 @@ def empty_dir(folder):
 
 
 def save_text(path, txt):
+    """
+    Saves the text to the specified path.
+    """
     with open(path, "w", encoding="utf-8") as outfile:
         outfile.write(txt)
 
 
 def load_text(path):
+    """
+    Returns the text loaded from the specified file path.
+    """
     with open(path, "r", encoding="utf-8") as infile:
         txt = infile.read()
     return txt
 
 
 def load_yaml(yaml_path):
+    """
+    Returns a dictionary loaded from the specified yaml file path.
+    """
     with open(yaml_path, "r", encoding="utf-8") as infile:
         return yaml.load(infile, Loader=yaml.FullLoader)
 
 
 def load_json(path):
+    """
+    Returns a dictionary loaded from the specified json file path.
+    """
     with open(path, "r", encoding="utf-8") as infile:
         data = json.load(infile)
     return data
 
 
 def save_json(path, data, ensure_ascii=False, cls=None):
+    """
+    Saves data to the specified json file path.
+    """
     with open(path, "w", encoding="utf-8") as outfile:
-        json.dump(data, outfile, indent=4, ensure_ascii=ensure_ascii, cls=None)
+        json.dump(data, outfile, indent=4, ensure_ascii=ensure_ascii, cls=cls)
 
 
 def save_yaml(path, data):
+    """
+    Saves data to the specified yaml file path.
+    """
     with open(path, 'w', encoding="utf-8") as file:
         yaml.dump(data, file, allow_unicode=True)
 
 
 def load_cfg(path):
+    """
+    Loads a config file in either yaml or json format.
+    """
     if path.endswith(".json"):
         return load_json(path)
     elif path.endswith(".yaml"):
@@ -122,6 +155,9 @@ def load_cfg(path):
 
 
 def save_cfg(path, data):
+    """
+    Saves data to a config file in either yaml or json format.
+    """
     if path.endswith(".json"):
         save_json(path, data)
     elif path.endswith(".yaml"):
@@ -131,6 +167,11 @@ def save_cfg(path, data):
 
 
 def environ_or_required(key):
+    """    
+    Helper function for argparsers.
+    Returns dictionary stating that the input var has a default value (from the environment): {"default":...} 
+    or that the variable is missing (required): {"required": True}.
+    """
     return (
         {'default': os.environ.get(key)} if os.environ.get(key)
         else {'required': True}
@@ -138,6 +179,9 @@ def environ_or_required(key):
 
 
 def remove_accents(input_str):
+    """
+    Removes accent characters from the input string by replacing accents by non-accented variants.
+    """
     nkfd_form = unicodedata.normalize('NFKD', str(input_str))
     return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
 
